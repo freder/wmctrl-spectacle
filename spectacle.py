@@ -59,7 +59,8 @@ with open(filePath, 'w+') as f:
 
 if (cmd == 'center'):
 	heightFactor = params[cmd][optionIdx]
-	w = 0.5 * width
+	widthFactor = 0.75 if (heightFactor == 1) else 0.5
+	w = widthFactor * width
 	h = heightFactor * height
 	x = (w - width) * 0.5
 	y = (h - height) * 0.5
