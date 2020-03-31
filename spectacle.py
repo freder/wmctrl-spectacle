@@ -34,7 +34,7 @@ def printCombined(cmds):
 
 
 
-# this.py '   1920x1080     60.00*+' 'center'
+# file.py '   1920x1080     60.00*+' 'center'
 args = sys.argv[1:]
 reso = args[0]
 
