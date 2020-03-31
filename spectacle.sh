@@ -7,6 +7,6 @@ mode=$1
 # left
 
 RESO=`xrandr --current | grep '*'`
-cmd=`python spectacle.py "$RESO" "$mode"`
-echo $cmd
+cmd=`python $(dirname $0)/spectacle.py "$RESO" "$mode"`
+# echo $cmd
 eval $cmd
