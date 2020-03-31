@@ -1,10 +1,12 @@
 #/bin/bash
 
-cmd=$1
+mode=$1
 # maximize
 # center
 # right
 # left
 
-RESO=`xrandr | grep '*'`
-python spectacle.py "$RESO"
+RESO=`xrandr --current | grep '*'`
+cmd=`python spectacle.py "$RESO" "$mode"`
+echo $cmd
+eval $cmd
