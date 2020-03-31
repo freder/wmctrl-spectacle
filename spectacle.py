@@ -66,7 +66,7 @@ if (cmd == 'center'):
 	printCombined([
 		removeMaximized,
 		makeResizeCmd([0, x, y, w, h]),
-		addMaximizedVert if (heightFactor == 1) else ''
+		# addMaximizedVert if (heightFactor == 1) else ''
 	])
 
 elif (cmd == 'maximize'):
@@ -81,7 +81,7 @@ elif (cmd == 'right'):
 	printCombined([
 		removeMaximized,
 		makeResizeCmd([0, x, y, w, h]),
-		addMaximizedVert,
+		# addMaximizedVert,
 	])
 
 elif (cmd == 'left'):
@@ -93,5 +93,5 @@ elif (cmd == 'left'):
 	printCombined([
 		removeMaximized,
 		makeResizeCmd([0, x, y, w, h]),
-		addMaximizedVert,
+		# addMaximizedVert,
 	])
