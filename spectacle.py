@@ -26,3 +26,5 @@ if (cmd == 'center'):
 			wmctrl
 		])
 	)
+elif (cmd == 'maximize'):
+	print('wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz')
