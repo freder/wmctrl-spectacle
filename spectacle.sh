@@ -11,9 +11,11 @@ screens=`xrandr | grep ' connected ' | tr '\n' '|'`
 
 # get active window id
 # example: 117440523
-# winId=`xdotool getactivewindow`
-window=`xwininfo -id $(xdotool getactivewindow) | grep -e 'Absolute' -e 'Width' -e 'Height' | tr '\n' '|'`
+winId=`xdotool getactivewindow`
+window=`xwininfo -id $winId \
+	| grep -e 'xwininfo: Window id:' -e 'Absolute' -e 'Width' -e 'Height' \
+	| tr '\n' '|'`
 # echo $window
 
 scriptPath="$(dirname $0)/spectacle.py"
-"$scriptPath" "$screens" "$window" "$mode"
+"$scriptPath" "$screens" "$window" "$winId" "$mode"

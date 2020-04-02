@@ -4,10 +4,6 @@ import re
 import os
 
 
-removeMaximized = 'wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz'
-addMaximized = 'wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz'
-addMaximizedVert = 'wmctrl -r :ACTIVE: -b add,maximized_vert'
-
 params = {
 	'maximize': [None],
 	'center': [1.0, 0.7],
@@ -24,10 +20,10 @@ def commaSeparated(arr):
 
 
 
-def makeResizeCmd(dims):
-	return 'wmctrl -r :ACTIVE: -e \'{}\''.format(
+def makeResizeCmd(dims, winId):
+	return 'wmctrl -i -r :ACTIVE: -e \'{}\''.format(
 		commaSeparated(dims)
-	)
+	).replace(':ACTIVE:', winId)
 
 
 
@@ -70,6 +66,7 @@ def parseScreens(screensStr):
 
 def parseWindow(s):
 	ret = {
+		'isChrome': False,
 		'width': 0,
 		'height': 0,
 		'offsetX': 0,
@@ -79,8 +76,14 @@ def parseWindow(s):
 	for line in s:
 		line = line.strip()
 		parts = line.split(': ')
+
+		if parts[0] == 'xwininfo':
+			title = parts[2].split('"')[1]
+			ret['isChrome'] = title.endswith('Google Chrome')
+
 		if len(parts) != 2:
 			continue
+
 		parts[1] = int(parts[1])
 		if parts[0] == 'Width':
 			ret['width'] = parts[1]
@@ -123,28 +126,40 @@ args = sys.argv[1:]
 
 screens = parseScreens(args[0])
 window = parseWindow(args[1])
-mode = args[2]
+winId = args[2]
+mode = args[3]
 
 # find out which screen the window is on
 screenIdx = getScreenIdx(screens, window['offsetX'])
+
 offsetX = screens[screenIdx]['offsetX']
 width = screens[screenIdx]['width']
 height = screens[screenIdx]['height']
+isChrome = window['isChrome']
 
 optionIdx = getOptionsIdx(mode)
+
+removeMaximized = 'wmctrl -i -r :ACTIVE: -b remove,maximized_vert,maximized_horz'.replace(':ACTIVE:', winId)
+addMaximized = 'wmctrl -i -r :ACTIVE: -b add,maximized_vert,maximized_horz'.replace(':ACTIVE:', winId)
+addMaximizedVert = 'wmctrl -i -r :ACTIVE: -b add,maximized_vert'.replace(':ACTIVE:', winId)
 
 cmd = None
 if (mode == 'center'):
 	heightFactor = params[mode][optionIdx]
-	widthFactor = 0.75 if (heightFactor == 1) else 0.5
+	fullHeight = (heightFactor == 1)
+	widthFactor = 0.75 if fullHeight else 0.5
+	actualHeightFactor = heightFactor 
+	if (fullHeight and isChrome):
+		actualHeightFactor = 0.5
+
 	w = widthFactor * width
-	h = heightFactor * height
+	h = actualHeightFactor * height
 	x = (width - w) * 0.5
 	y = (height - h) * 0.5
 	cmd = combineCommands([
 		removeMaximized,
-		makeResizeCmd([0, offsetX + x, y, w, h]),
-		# addMaximizedVert if (heightFactor == 1) else ''
+		makeResizeCmd([0, offsetX + x, y, w, h], winId),
+		addMaximizedVert if (isChrome and fullHeight) else ''
 	])
 
 elif (mode == 'maximize'):
@@ -154,26 +169,28 @@ elif (mode == 'maximize'):
 
 elif (mode == 'right'):
 	widthFactor = params[mode][optionIdx]
+	actualHeight = height if (not isChrome) else 0.5
 	w = widthFactor * width
-	h = height
+	h = actualHeight
 	x = width - w
 	y = 0
 	cmd = combineCommands([
 		removeMaximized,
-		makeResizeCmd([0, offsetX + x, y, w, h]),
-		# addMaximizedVert,
+		makeResizeCmd([0, offsetX + x, y, w, h], winId),
+		addMaximizedVert if (isChrome) else ''
 	])
 
 elif (mode == 'left'):
 	widthFactor = params[mode][optionIdx]
+	actualHeight = height if (not isChrome) else 0.5
 	w = widthFactor * width
-	h = height
+	h = actualHeight
 	x = 0
 	y = 0
 	cmd = combineCommands([
 		removeMaximized,
-		makeResizeCmd([0, offsetX + x, y, w, h]),
-		# addMaximizedVert,
+		makeResizeCmd([0, offsetX + x, y, w, h], winId),
+		addMaximizedVert if (isChrome) else ''
 	])
 
 print(cmd)
