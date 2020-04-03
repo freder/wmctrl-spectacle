@@ -12,19 +12,16 @@ params = {
 }
 
 
-
 def commaSeparated(arr):
 	return ','.join([
 		str(int(a)) for a in arr
 	])
 
 
-
 def makeResizeCmd(dims, winId):
 	return 'wmctrl -i -r :ACTIVE: -e \'{}\''.format(
 		commaSeparated(dims)
 	).replace(':ACTIVE:', winId)
-
 
 
 def combineCommands(cmds):
@@ -44,15 +41,15 @@ def parseSizeOffset(s):
 
 
 def parseScreen(item):
-	return parseSizeOffset( 
+	return parseSizeOffset(
 		item.split('connected ')[1].split(' ')[0]
 	)
 
 
 def parseScreens(screensStr):
 	screens = map(
-		lambda line: line.replace('primary ', ''), 
-		args[0].strip('|').split('|')
+		lambda line: line.replace('primary ', ''),
+		screensStr.strip('|').split('|')
 	)
 	screens = [
 		parseScreen(item)
@@ -121,7 +118,6 @@ def getOptionsIdx(mode):
 	return optionIdx
 
 
-
 args = sys.argv[1:]
 
 screens = parseScreens(args[0])
@@ -148,7 +144,7 @@ if (mode == 'center'):
 	heightFactor = params[mode][optionIdx]
 	fullHeight = (heightFactor == 1)
 	widthFactor = 0.75 if fullHeight else 0.5
-	actualHeightFactor = heightFactor 
+	actualHeightFactor = heightFactor
 	if (fullHeight and isChrome):
 		actualHeightFactor = 0.5
 
