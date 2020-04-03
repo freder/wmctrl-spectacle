@@ -5,6 +5,8 @@ requirements:
 - python3
 - wmctrl
 
+![screen recording](recording.gif)
+
 ```
 ./spectacle.sh maximize
 ./spectacle.sh center
