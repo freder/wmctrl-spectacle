@@ -8,6 +8,7 @@ requirements:
 ![screen recording](recording.gif)
 
 ```
+./spectacle.sh center-window
 ./spectacle.sh maximize
 ./spectacle.sh center
 ./spectacle.sh left
