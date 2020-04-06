@@ -7,6 +7,7 @@ import os
 params = {
 	'maximize': [None],
 	'center': [1.0, 0.7],
+	'center-window': [None],
 	'left': [0.33, 0.5, 0.75],
 	'right': [0.33, 0.5, 0.75],
 }
@@ -156,6 +157,16 @@ if (mode == 'center'):
 		removeMaximized,
 		makeResizeCmd([0, offsetX + x, y, w, h], winId),
 		addMaximizedVert if (isChrome and fullHeight) else ''
+	])
+
+elif (mode == 'center-window'):
+	w = window['width']
+	h = window['height']
+	x = (width - w) * 0.5
+	y = (height - h) * 0.5
+	cmd = combineCommands([
+		removeMaximized,
+		makeResizeCmd([0, offsetX + x, y, w, h], winId),
 	])
 
 elif (mode == 'maximize'):

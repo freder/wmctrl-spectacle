@@ -1,6 +1,6 @@
 #/bin/bash
 
-# maximize | center | right | left
+# maximize | center | center-window | right | left
 mode=$1
 
 # get info about connected screens
