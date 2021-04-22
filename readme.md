@@ -4,6 +4,7 @@ requirements:
 - xrandr
 - python3
 - wmctrl
+- xdotool
 
 ![screen recording](recording.gif)
 
